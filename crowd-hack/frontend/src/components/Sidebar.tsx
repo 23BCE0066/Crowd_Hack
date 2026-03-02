@@ -17,8 +17,8 @@ const Sidebar = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (
                     <div className="absolute inset-0 rounded-full border border-white/20 animate-pulse" />
                 </div>
                 <div>
-                    <h1 className="font-extrabold text-xl tracking-tight text-white leading-tight">Smart AI Crowd</h1>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold">Monitoring & IOT</p>
+                    <h1 className="font-extrabold text-xl tracking-tight text-white leading-tight">Smart AI</h1>
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold">Crowd Guard Monitoring</p>
                 </div>
             </div>
 
