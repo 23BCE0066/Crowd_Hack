@@ -35,7 +35,7 @@ const AlertsPage = () => {
 
         if (data) {
             // Filter out any legacy test alerts
-            const realAlerts = data.filter(a => a.type !== 'test' && !a.title?.toLowerCase().includes('test'));
+            const realAlerts = (data as AlertLog[]).filter((a: AlertLog) => a.type !== 'test' && !a.title?.toLowerCase().includes('test'));
             setAlerts(realAlerts);
         }
         setLoading(false);
