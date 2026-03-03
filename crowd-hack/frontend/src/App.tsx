@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import SpeedometerGauge from './components/SpeedometerGauge';
 import LiveFeed from './components/LiveFeed';
@@ -63,8 +63,6 @@ const ToggleSection = ({ id, title, icon: Icon, isOpen, onToggle, children, acce
   );
 };
 
-
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000';
 
 function App() {
   const { user, isSignedIn } = useUser();
@@ -200,19 +198,6 @@ function App() {
         setPermissionStatus(status.state);
       };
     });
-
-    const resetBackend = async () => {
-      try {
-        await fetch(`${API_BASE_URL}/toggle-monitoring`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ active: false }),
-        });
-      } catch (e) {
-        console.warn("Backend reset failed", e);
-      }
-    };
-    resetBackend();
   }, []);
 
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
@@ -253,13 +238,6 @@ function App() {
           setCurrentSessionId(data[0].id);
         }
       }
-
-      // Notify Backend
-      await fetch(`${API_BASE_URL}/toggle-monitoring`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ active: true }),
-      });
     } catch (error) {
       console.error("Error starting monitoring:", error);
     } finally {
@@ -298,105 +276,90 @@ function App() {
 
       activeAlertIdRef.current = null;
     }
-
-    try {
-      await fetch(`${API_BASE_URL}/toggle-monitoring`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ active: false }),
-      });
-    } catch (error) {
-      console.error("Error stopping monitoring:", error);
-    }
   };
 
-  useEffect(() => {
-    if (!isCameraOn) return;
 
-    const interval = setInterval(() => {
-      fetch(`${API_BASE_URL}/status`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.timestamp) {
-            const newCount = data.person_count || 0;
-            const newRisk = Math.min(100, Math.round((newCount / maxCapacity) * 100));
+  // Local Detection Handler
+  const handleDetect = useCallback((newCount: number) => {
+    const newRisk = Math.min(100, Math.round((newCount / maxCapacity) * 100));
 
-            setCrowdCount(newCount);
-            setRiskValue(newRisk);
+    setCrowdCount(newCount);
+    setRiskValue(newRisk);
 
-            // Automated Alert Lifecycle
-            if (newCount > 0 && newRisk >= riskThreshold) {
-              if (!activeAlertIdRef.current && !isStartingAlertRef.current && isSignedIn && user) {
-                // START NEW ALERT
-                isStartingAlertRef.current = true;
-                console.log("[MONITOR] Starting new alert...");
-                (async () => {
-                  try {
-                    const { data, error } = await supabase.from('alerts').insert([{
-                      user_id: user.id,
-                      type: newRisk >= 90 ? 'critical' : newRisk >= 75 ? 'high' : 'medium',
-                      title: newRisk >= 90 ? 'Critical Crowd Risk' : 'High Crowd Density',
-                      message: `Alert: Crowd risk reached ${newRisk}% with ${newCount} people.`,
-                      risk_value: newRisk,
-                      detected_count: newCount,
-                      timestamp: new Date().toISOString()
-                    }]).select();
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    setChartData(prev => {
+      // Prevent adding duplicate identical timestamps
+      if (prev.length > 0 && prev[prev.length - 1].time === timeStr) {
+        return prev;
+      }
+      const newData = [...prev, { time: timeStr, count: newCount, risk: newRisk }];
+      return newData.slice(-20);
+    });
 
-                    if (!error && data?.[0]) {
-                      activeAlertIdRef.current = data[0].id;
-                      console.log("[MONITOR] Alert started:", data[0].id);
-                    }
-                  } finally {
-                    isStartingAlertRef.current = false;
-                  }
-                })();
-              } else if (activeAlertIdRef.current) {
-                // UPDATE PEAK COUNT IF NEEDED
-                (async () => {
-                  const alertId = activeAlertIdRef.current;
-                  if (alertId) {
-                    await supabase.from('alerts')
-                      .update({
-                        detected_count: newCount,
-                        risk_value: newRisk
-                      })
-                      .eq('id', alertId);
-                  }
-                })();
-              }
+    // Automated Alert Lifecycle
+    if (newCount > 0 && newRisk >= riskThreshold) {
+      if (!activeAlertIdRef.current && !isStartingAlertRef.current && isSignedIn && user) {
+        // START NEW ALERT
+        isStartingAlertRef.current = true;
+        console.log("[MONITOR] Starting new alert...");
+        (async () => {
+          try {
+            const { data, error } = await supabase.from('alerts').insert([{
+              user_id: user.id,
+              type: newRisk >= 90 ? 'critical' : newRisk >= 75 ? 'high' : 'medium',
+              title: newRisk >= 90 ? 'Critical Crowd Risk' : 'High Crowd Density',
+              message: `Alert: Crowd risk reached ${newRisk}% with ${newCount} people.`,
+              risk_value: newRisk,
+              detected_count: newCount,
+              timestamp: new Date().toISOString()
+            }]).select();
 
-              playAlarm();
-              if (newRisk >= 90) {
-                speakAlert(`Warning: Risk is ${newRisk} percent. Closing venue doors.`);
-                playSiren();
-              } else if (newRisk >= 75) {
-                speakAlert(`Alert: Risk reached ${newRisk} percent.`);
-              }
-            } else if (activeAlertIdRef.current) {
-              // END ALERT
-              const alertToClose = activeAlertIdRef.current;
-              activeAlertIdRef.current = null;
-              console.log("[MONITOR] Risk dropped. Closing alert:", alertToClose);
-              (async () => {
-                const endTime = new Date();
-                await supabase.from('alerts')
-                  .update({ end_time: endTime.toISOString() })
-                  .eq('id', alertToClose);
-              })();
+            if (!error && data?.[0]) {
+              activeAlertIdRef.current = data[0].id;
+              console.log("[MONITOR] Alert started:", data[0].id);
             }
-
-            const timeStr = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            setChartData(prev => {
-              const newData = [...prev, { time: timeStr, count: newCount, risk: newRisk }];
-              return newData.slice(-20);
-            });
+          } finally {
+            isStartingAlertRef.current = false;
           }
-        })
-        .catch(err => console.error("Fetch error:", err));
-    }, 1000);
+        })();
+      } else if (activeAlertIdRef.current) {
+        // UPDATE PEAK COUNT IF NEEDED
+        (async () => {
+          const alertId = activeAlertIdRef.current;
+          if (alertId) {
+            await supabase.from('alerts')
+              .update({
+                detected_count: newCount,
+                risk_value: newRisk
+              })
+              .eq('id', alertId);
+          }
+        })();
+      }
 
-    return () => clearInterval(interval);
-  }, [isCameraOn, maxCapacity, riskThreshold, iotThreshold, isMuted, sirenActive, beaconsActive, user, isSignedIn]);
+      playAlarm();
+      if (newRisk >= 90) {
+        speakAlert(`Warning: Risk is ${newRisk} percent. Closing venue doors.`);
+        playSiren();
+      } else if (newRisk >= 75) {
+        speakAlert(`Alert: Risk reached ${newRisk} percent.`);
+      }
+    } else if (activeAlertIdRef.current) {
+      // END ALERT
+      const alertToClose = activeAlertIdRef.current;
+      activeAlertIdRef.current = null;
+      console.log("[MONITOR] Risk dropped. Closing alert:", alertToClose);
+      (async () => {
+        const endTime = new Date();
+        await supabase.from('alerts')
+          .update({ end_time: endTime.toISOString() })
+          .eq('id', alertToClose);
+      })();
+    }
+
+  }, [maxCapacity, riskThreshold, user, isSignedIn, isMuted, sirenActive, beaconsActive]);
+
+
 
   return (
     <div className="flex min-h-screen bg-[#0a0c14] text-white font-sans selection:bg-primary/30">
@@ -558,7 +521,7 @@ function App() {
                 accentColor="#00ff88"
               >
                 <div className="min-h-[550px]">
-                  <LiveFeed stream={stream} />
+                  <LiveFeed stream={stream} onDetect={handleDetect} />
                 </div>
               </ToggleSection>
 
