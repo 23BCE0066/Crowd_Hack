@@ -68,19 +68,19 @@ const SettingsPage = () => {
     if (loading) return <div className="text-white/20 font-black animate-pulse">Loading Account Settings...</div>;
 
     return (
-        <div className="max-w-4xl space-y-10">
+        <div className="max-w-4xl w-full mx-auto space-y-6 md:space-y-10">
             <div>
-                <h2 className="text-2xl font-black text-white">Advanced Settings</h2>
-                <p className="text-white/30 text-xs font-bold tracking-widest uppercase mt-1">Manage your identity and preferences</p>
+                <h2 className="text-xl md:text-2xl font-black text-white">Advanced Settings</h2>
+                <p className="text-white/30 text-[10px] md:text-xs font-bold tracking-widest uppercase mt-1">Manage your identity and preferences</p>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-8">
-                <div className="p-6 md:p-10 rounded-[2.5rem] bg-[#121624]/40 border border-white/5 backdrop-blur-3xl space-y-8">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-4 flex items-center gap-2">
+            <form onSubmit={handleSave} className="space-y-6 md:space-y-8 w-full">
+                <div className="p-5 md:p-10 rounded-3xl md:rounded-[2.5rem] bg-[#121624]/40 border border-white/5 backdrop-blur-3xl space-y-6 md:space-y-8">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-2 md:mb-4 flex items-center gap-2">
                         <User className="w-3 h-3" /> Account Information
                     </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                         {/* Name */}
                         <div className="space-y-3">
                             <label className="text-xs font-black text-white/40 uppercase tracking-widest pl-1">Full Name</label>
@@ -139,7 +139,7 @@ const SettingsPage = () => {
                 </div>
 
                 {/* Account Security / Logout Section */}
-                <div className="p-6 md:p-8 rounded-[2.5rem] bg-red-500/[0.02] border border-red-500/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-0">
+                <div className="p-5 md:p-8 rounded-3xl md:rounded-[2.5rem] bg-red-500/[0.02] border border-red-500/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
                     <div>
                         <h4 className="text-sm font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-widest">Sign Out</h4>
                         <p className="text-xs text-white/20 font-bold mt-1">End current administrator session</p>
