@@ -75,7 +75,7 @@ const SettingsPage = () => {
             </div>
 
             <form onSubmit={handleSave} className="space-y-8">
-                <div className="p-10 rounded-[2.5rem] bg-[#121624]/40 border border-white/5 backdrop-blur-3xl space-y-8">
+                <div className="p-6 md:p-10 rounded-[2.5rem] bg-[#121624]/40 border border-white/5 backdrop-blur-3xl space-y-8">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-4 flex items-center gap-2">
                         <User className="w-3 h-3" /> Account Information
                     </h3>
@@ -139,7 +139,7 @@ const SettingsPage = () => {
                 </div>
 
                 {/* Account Security / Logout Section */}
-                <div className="p-8 rounded-[2.5rem] bg-red-500/[0.02] border border-red-500/10 flex items-center justify-between">
+                <div className="p-6 md:p-8 rounded-[2.5rem] bg-red-500/[0.02] border border-red-500/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-0">
                     <div>
                         <h4 className="text-sm font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-widest">Sign Out</h4>
                         <p className="text-xs text-white/20 font-bold mt-1">End current administrator session</p>

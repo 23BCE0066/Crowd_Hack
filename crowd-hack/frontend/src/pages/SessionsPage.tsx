@@ -124,12 +124,12 @@ const SessionsPage = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                 <div>
                     <h2 className="text-2xl font-black text-white">Monitoring Sessions</h2>
                     <p className="text-white/30 text-xs font-bold tracking-widest uppercase mt-1">Activity log of crowd analysis</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 md:gap-4 w-full md:w-auto">
                     <button
                         onClick={clearHistory}
                         className="px-6 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-[10px] font-black uppercase tracking-widest hover:bg-red-500/20 transition-all text-red-500/60 hover:text-red-500"
@@ -147,7 +147,7 @@ const SessionsPage = () => {
 
             <div className="grid gap-4">
                 {sessions.map((session) => (
-                    <div key={session.id} className="p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/5 flex items-center justify-between hover:bg-white/[0.04] transition-all">
+                    <div key={session.id} className="p-4 md:p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 hover:bg-white/[0.04] transition-all">
                         <div className="flex items-center gap-6">
                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${session.status === 'active' ? 'bg-[#00ff88]/10 text-[#00ff88]' : 'bg-white/5 text-white/20'}`}>
                                 <Activity className="w-5 h-5" />
@@ -166,7 +166,7 @@ const SessionsPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left md:text-right w-full md:w-auto mt-2 md:mt-0">
                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 mb-1">Duration</p>
                             <p className={`font-black tracking-tight ${session.status === 'active' ? 'text-[#00ff88]' : 'text-white'}`}>
                                 {calculateDuration(session.start_time, session.end_time)}

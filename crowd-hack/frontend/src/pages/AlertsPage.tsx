@@ -122,12 +122,12 @@ const AlertsPage = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                 <div>
                     <h2 className="text-2xl font-black text-white uppercase tracking-tighter italic">Security Alert Logs</h2>
                     <p className="text-white/30 text-[10px] font-black tracking-[0.3em] uppercase mt-1">Automated threat detection history</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 md:gap-4 w-full md:w-auto">
                     <button
                         onClick={clearHistory}
                         className="px-6 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-[10px] font-black uppercase tracking-widest hover:bg-red-500/20 transition-all text-red-500/60 hover:text-red-500"
@@ -154,19 +154,19 @@ const AlertsPage = () => {
                     </div>
                 ) : (
                     alerts.map((alert) => (
-                        <div key={alert.id} className="p-8 rounded-[2rem] bg-[#121624]/40 border border-white/5 flex items-center gap-8 group hover:border-white/10 transition-all relative overflow-hidden">
+                        <div key={alert.id} className="p-6 md:p-8 rounded-[2rem] bg-[#121624]/40 border border-white/5 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 group hover:border-white/10 transition-all relative overflow-hidden">
                             {/* Status Indicator Bar */}
-                            <div className={`absolute left-0 top-0 bottom-0 w-1 ${alert.type === 'critical' ? 'bg-red-500' :
+                            <div className={`absolute left-0 top-0 bottom-0 w-1 md:w-1.5 ${alert.type === 'critical' ? 'bg-red-500' :
                                 alert.type === 'high' ? 'bg-orange-500' : 'bg-yellow-500'
                                 }`} />
 
-                            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${alert.type === 'critical' ? 'bg-red-500/10 text-red-500' :
+                            <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl flex shrink-0 items-center justify-center ${alert.type === 'critical' ? 'bg-red-500/10 text-red-500' :
                                 alert.type === 'high' ? 'bg-orange-500/10 text-orange-500' : 'bg-yellow-500/10 text-yellow-500'
                                 }`}>
-                                <AlertTriangle className="w-8 h-8" />
+                                <AlertTriangle className="w-6 h-6 md:w-8 md:h-8" />
                             </div>
 
-                            <div className="flex-1">
+                            <div className="flex-1 w-full">
                                 <div className="flex items-center gap-3 mb-1">
                                     <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${alert.type === 'critical' ? 'bg-red-500/20 border-red-500/30 text-red-500' :
                                         alert.type === 'high' ? 'bg-orange-500/20 border-orange-500/30 text-orange-500' : 'bg-yellow-500/20 border-yellow-500/30 text-yellow-500'

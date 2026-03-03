@@ -49,12 +49,12 @@ const DevicesPage: React.FC<DeviceProps> = ({ riskValue, iotThreshold, sirenActi
 
     return (
         <div className="space-y-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-black text-white">IoT Ecosystem</h2>
                     <p className="text-white/30 text-xs font-bold tracking-widest uppercase mt-1">Status of connected hardware</p>
                 </div>
-                <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+                <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/10 w-full md:w-auto justify-center md:justify-start">
                     <Power className="w-3 h-3 text-[#00ff88]" />
                     <span className="text-[10px] font-black uppercase text-white/50 tracking-widest">System Online</span>
                 </div>
@@ -100,7 +100,7 @@ const DevicesPage: React.FC<DeviceProps> = ({ riskValue, iotThreshold, sirenActi
             </div>
 
             {/* AI Response Logic Card */}
-            <div className="p-10 rounded-[2.5rem] bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
+            <div className="p-6 md:p-10 rounded-[2.5rem] bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
                 <div className="flex items-center gap-4 mb-6">
                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                         <Laptop className="w-5 h-5 text-primary" />

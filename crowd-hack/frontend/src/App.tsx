@@ -3,7 +3,7 @@ import Sidebar from './components/Sidebar';
 import SpeedometerGauge from './components/SpeedometerGauge';
 import LiveFeed from './components/LiveFeed';
 import DashboardCharts from './components/DashboardCharts';
-import { Activity, ShieldCheck, PlayCircle, Settings, Users, AlertTriangle, ChevronDown, Volume2, VolumeX, Eye, LogIn } from 'lucide-react';
+import { Activity, ShieldCheck, PlayCircle, Settings, Users, AlertTriangle, ChevronDown, Volume2, VolumeX, Eye, LogIn, Menu } from 'lucide-react';
 import { useUser, SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 import { supabase } from './lib/supabaseClient';
 
@@ -29,7 +29,7 @@ const ToggleSection = ({ id, title, icon: Icon, isOpen, onToggle, children, acce
       {/* Clickable header */}
       <button
         onClick={() => onToggle(id)}
-        className="w-full flex items-center justify-between px-10 py-6 group hover:bg-white/[0.02] transition-colors"
+        className="w-full flex items-center justify-between px-6 lg:px-10 py-5 lg:py-6 group hover:bg-white/[0.02] transition-colors"
       >
         <div className="flex items-center gap-4">
           <div
@@ -55,7 +55,7 @@ const ToggleSection = ({ id, title, icon: Icon, isOpen, onToggle, children, acce
         className={`transition-all duration-700 ease-in-out overflow-hidden ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
           }`}
       >
-        <div className="px-10 pb-10">
+        <div className="px-6 lg:px-10 pb-6 lg:pb-10">
           {children}
         </div>
       </div>
@@ -75,6 +75,7 @@ function App() {
 
   // Dashboard States
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [maxCapacity, setMaxCapacity] = useState(20);
   const [riskThreshold, setRiskThreshold] = useState(80);
   const [iotThreshold, setIotThreshold] = useState(70);
@@ -363,16 +364,24 @@ function App() {
 
   return (
     <div className="flex min-h-screen bg-[#0a0c14] text-white font-sans selection:bg-primary/30">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="px-10 py-8 flex items-center justify-between border-b border-white/5">
-          <div>
-            <h2 className="text-3xl font-black tracking-tight mb-1 text-white">Live Crowd Monitoring</h2>
-            <p className="text-white/30 font-bold tracking-wide text-sm">Real-time crowd analytics using your device camera.</p>
-          </div>
+        <header className="px-6 lg:px-10 py-6 lg:py-8 flex flex-col lg:flex-row items-start lg:items-center justify-between border-b border-white/5 gap-6">
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-2 text-white/70 hover:text-white"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-black tracking-tight mb-1 text-white">Live Crowd Monitoring</h2>
+              <p className="text-white/30 font-bold tracking-wide text-xs lg:text-sm">Real-time crowd analytics using your device camera.</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 lg:gap-4 w-full lg:w-auto">
             {/* Audio Mute Toggle */}
             <button
               onClick={() => setIsMuted(!isMuted)}
@@ -507,7 +516,7 @@ function App() {
 
 
         {/* ===== CONTENT AREA (Based on Active Tab) ===== */}
-        <div className="flex-1 overflow-y-auto px-10 py-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto px-4 lg:px-10 py-6 lg:py-8 custom-scrollbar">
 
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
@@ -541,7 +550,7 @@ function App() {
                     <div className="absolute inset-0 bg-gradient-to-b from-[#00d2ff]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                     <p className="text-xs font-black tracking-[0.25em] uppercase text-white/30 mb-4">People Detected</p>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-[120px] font-black tracking-tighter text-white leading-none">{crowdCount}</span>
+                      <span className="text-[80px] lg:text-[120px] font-black tracking-tighter text-white leading-none">{crowdCount}</span>
                       <span className="text-2xl font-bold text-white/20">/ {maxCapacity}</span>
                     </div>
                     <div className="mt-6 flex items-center gap-2">
@@ -566,7 +575,7 @@ function App() {
                     <p className="text-xs font-black tracking-[0.25em] uppercase text-white/30 mb-4">Risk Level</p>
                     <div className="flex items-baseline gap-1">
                       <span
-                        className="text-[120px] font-black tracking-tighter leading-none transition-colors duration-500"
+                        className="text-[80px] lg:text-[120px] font-black tracking-tighter leading-none transition-colors duration-500"
                         style={{ color: riskValue < 30 ? '#00ff88' : riskValue < 60 ? '#f39c12' : '#e74c3c' }}
                       >
                         {riskValue}
