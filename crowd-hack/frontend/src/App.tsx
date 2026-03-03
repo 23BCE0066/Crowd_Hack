@@ -458,62 +458,63 @@ function App() {
                         />
                       </div>
                     </div>
-                  </>
+                  </div>
+                </>
               )}
-                </div>
-
-              {permissionStatus === 'granted' && !isCameraOn && (
-                <span className="text-[10px] font-black text-[#00ff88]/40 tracking-widest uppercase flex items-center gap-2">
-                  <ShieldCheck className="w-3 h-3" />
-                  Access Authorized
-                </span>
-              )}
-              {permissionStatus === 'denied' && (
-                <span className="text-[10px] font-black text-red-500/40 tracking-widest uppercase flex items-center gap-2">
-                  <ShieldCheck className="w-3 h-3" />
-                  Access Blocked
-                </span>
-              )}
-              {/* Auth UI */}
-              <div className="flex items-center gap-4 pl-4 border-l border-white/10">
-                <SignedOut>
-                  <SignInButton mode="modal">
-                    <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all font-black tracking-tight active:scale-95">
-                      <LogIn className="w-4 h-4" />
-                      Sign In
-                    </button>
-                  </SignInButton>
-                </SignedOut>
-                <SignedIn>
-                  <UserButton afterSignOutUrl="/" appearance={{
-                    elements: {
-                      userButtonAvatarBox: "w-10 h-10 rounded-xl"
-                    }
-                  }} />
-                </SignedIn>
-              </div>
-
-              {sessionError && (
-                <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20 max-w-[200px] truncate">
-                  DB Error: {sessionError}
-                </span>
-              )}
-
-              <button
-                onClick={isCameraOn ? stopMonitoring : startMonitoring}
-                disabled={!isSignedIn}
-                className={`flex items-center gap-3 px-8 py-3 rounded-3xl font-black tracking-tight transition-all active:scale-95 shadow-lg ${!isSignedIn
-                  ? 'bg-white/5 border border-white/10 text-white/20 cursor-not-allowed'
-                  : isCameraOn
-                    ? 'bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20'
-                    : 'bg-[#00ff88]/10 border border-[#00ff88]/20 text-[#00ff88] hover:bg-[#00ff88]/20'
-                  }`}
-              >
-                <PlayCircle className="w-5 h-5" />
-                {isCameraOn ? 'Stop Monitoring' : 'Start Monitoring'}
-                {!isSignedIn && <span className="text-[10px] opacity-50">(Login required)</span>}
-              </button>
             </div>
+
+            {permissionStatus === 'granted' && !isCameraOn && (
+              <span className="text-[10px] font-black text-[#00ff88]/40 tracking-widest uppercase flex items-center gap-2">
+                <ShieldCheck className="w-3 h-3" />
+                Access Authorized
+              </span>
+            )}
+            {permissionStatus === 'denied' && (
+              <span className="text-[10px] font-black text-red-500/40 tracking-widest uppercase flex items-center gap-2">
+                <ShieldCheck className="w-3 h-3" />
+                Access Blocked
+              </span>
+            )}
+            {/* Auth UI */}
+            <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all font-black tracking-tight active:scale-95">
+                    <LogIn className="w-4 h-4" />
+                    Sign In
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-10 h-10 rounded-xl"
+                  }
+                }} />
+              </SignedIn>
+            </div>
+
+            {sessionError && (
+              <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20 max-w-[200px] truncate">
+                DB Error: {sessionError}
+              </span>
+            )}
+
+            <button
+              onClick={isCameraOn ? stopMonitoring : startMonitoring}
+              disabled={!isSignedIn}
+              className={`flex items-center gap-3 px-8 py-3 rounded-3xl font-black tracking-tight transition-all active:scale-95 shadow-lg ${!isSignedIn
+                ? 'bg-white/5 border border-white/10 text-white/20 cursor-not-allowed'
+                : isCameraOn
+                  ? 'bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20'
+                  : 'bg-[#00ff88]/10 border border-[#00ff88]/20 text-[#00ff88] hover:bg-[#00ff88]/20'
+                }`}
+            >
+              <PlayCircle className="w-5 h-5" />
+              {isCameraOn ? 'Stop Monitoring' : 'Start Monitoring'}
+              {!isSignedIn && <span className="text-[10px] opacity-50">(Login required)</span>}
+            </button>
+          </div>
         </header>
 
 
@@ -685,7 +686,7 @@ function App() {
 
         </div>
       </main>
-    </div>
+    </div >
   );
 }
 
