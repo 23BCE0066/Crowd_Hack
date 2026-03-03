@@ -407,111 +407,113 @@ function App() {
               </button>
 
               {showSettings && (
-                <div className="absolute top-full right-0 mt-4 w-[calc(100vw-3rem)] max-w-80 bg-[#121624] border border-white/10 rounded-[2rem] p-6 lg:p-8 shadow-2xl backdrop-blur-3xl z-50 origin-top-right">
-                  <h3 className="text-xs font-black text-white/30 tracking-[0.2em] uppercase mb-6">Threshold Settings</h3>
+                <>
+                  <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowSettings(false)} />
+                  <div className="absolute top-full right-0 lg:right-0 mt-4 w-[calc(100vw-3rem)] sm:w-80 max-w-sm bg-[#121624] border border-white/10 rounded-[2rem] p-6 lg:p-8 shadow-2xl backdrop-blur-3xl z-50 origin-top-right !right-0 translate-x-0 lg:translate-x-0 sm:-translate-x-1/4">
+                    <h3 className="text-xs font-black text-white/30 tracking-[0.2em] uppercase mb-6">Threshold Settings</h3>
 
-                  <div className="space-y-8">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black text-white/60 flex items-center gap-2">
-                          <Users className="w-4 h-4 text-primary" /> Venue Capacity
-                        </span>
+                    <div className="space-y-8">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-white/60 flex items-center gap-2">
+                            <Users className="w-4 h-4 text-primary" /> Venue Capacity
+                          </span>
+                          <input
+                            type="number"
+                            value={maxCapacity}
+                            onChange={(e) => setMaxCapacity(Math.max(1, parseInt(e.target.value) || 1))}
+                            className="w-16 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs font-black text-primary text-center focus:outline-none focus:border-primary/40"
+                          />
+                        </div>
                         <input
-                          type="number"
+                          type="range"
+                          min="1"
+                          max="1000"
                           value={maxCapacity}
-                          onChange={(e) => setMaxCapacity(Math.max(1, parseInt(e.target.value) || 1))}
-                          className="w-16 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs font-black text-primary text-center focus:outline-none focus:border-primary/40"
+                          onChange={(e) => setMaxCapacity(parseInt(e.target.value))}
+                          className="w-full accent-primary bg-white/5 h-1.5 rounded-full appearance-none cursor-pointer"
+                        />
+                        <div className="flex justify-between text-[8px] font-black text-white/20 uppercase tracking-widest">
+                          <span>Room</span>
+                          <span>Hall</span>
+                          <span>Stadium</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-white/60 flex items-center gap-2">
+                            <AlertTriangle className="w-4 h-4 text-risk-high" /> Max Risk %
+                          </span>
+                          <span className="text-sm font-black text-risk-high">{riskThreshold}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="10"
+                          max="100"
+                          step="5"
+                          value={riskThreshold}
+                          onChange={(e) => setRiskThreshold(parseInt(e.target.value))}
+                          className="w-full accent-risk-high bg-white/5 h-1.5 rounded-full appearance-none cursor-pointer"
                         />
                       </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="1000"
-                        value={maxCapacity}
-                        onChange={(e) => setMaxCapacity(parseInt(e.target.value))}
-                        className="w-full accent-primary bg-white/5 h-1.5 rounded-full appearance-none cursor-pointer"
-                      />
-                      <div className="flex justify-between text-[8px] font-black text-white/20 uppercase tracking-widest">
-                        <span>Room</span>
-                        <span>Hall</span>
-                        <span>Stadium</span>
-                      </div>
                     </div>
-
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black text-white/60 flex items-center gap-2">
-                          <AlertTriangle className="w-4 h-4 text-risk-high" /> Max Risk %
-                        </span>
-                        <span className="text-sm font-black text-risk-high">{riskThreshold}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="10"
-                        max="100"
-                        step="5"
-                        value={riskThreshold}
-                        onChange={(e) => setRiskThreshold(parseInt(e.target.value))}
-                        className="w-full accent-risk-high bg-white/5 h-1.5 rounded-full appearance-none cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                </div>
+                  </>
               )}
+                </div>
+
+              {permissionStatus === 'granted' && !isCameraOn && (
+                <span className="text-[10px] font-black text-[#00ff88]/40 tracking-widest uppercase flex items-center gap-2">
+                  <ShieldCheck className="w-3 h-3" />
+                  Access Authorized
+                </span>
+              )}
+              {permissionStatus === 'denied' && (
+                <span className="text-[10px] font-black text-red-500/40 tracking-widest uppercase flex items-center gap-2">
+                  <ShieldCheck className="w-3 h-3" />
+                  Access Blocked
+                </span>
+              )}
+              {/* Auth UI */}
+              <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all font-black tracking-tight active:scale-95">
+                      <LogIn className="w-4 h-4" />
+                      Sign In
+                    </button>
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <UserButton afterSignOutUrl="/" appearance={{
+                    elements: {
+                      userButtonAvatarBox: "w-10 h-10 rounded-xl"
+                    }
+                  }} />
+                </SignedIn>
+              </div>
+
+              {sessionError && (
+                <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20 max-w-[200px] truncate">
+                  DB Error: {sessionError}
+                </span>
+              )}
+
+              <button
+                onClick={isCameraOn ? stopMonitoring : startMonitoring}
+                disabled={!isSignedIn}
+                className={`flex items-center gap-3 px-8 py-3 rounded-3xl font-black tracking-tight transition-all active:scale-95 shadow-lg ${!isSignedIn
+                  ? 'bg-white/5 border border-white/10 text-white/20 cursor-not-allowed'
+                  : isCameraOn
+                    ? 'bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20'
+                    : 'bg-[#00ff88]/10 border border-[#00ff88]/20 text-[#00ff88] hover:bg-[#00ff88]/20'
+                  }`}
+              >
+                <PlayCircle className="w-5 h-5" />
+                {isCameraOn ? 'Stop Monitoring' : 'Start Monitoring'}
+                {!isSignedIn && <span className="text-[10px] opacity-50">(Login required)</span>}
+              </button>
             </div>
-
-            {permissionStatus === 'granted' && !isCameraOn && (
-              <span className="text-[10px] font-black text-[#00ff88]/40 tracking-widest uppercase flex items-center gap-2">
-                <ShieldCheck className="w-3 h-3" />
-                Access Authorized
-              </span>
-            )}
-            {permissionStatus === 'denied' && (
-              <span className="text-[10px] font-black text-red-500/40 tracking-widest uppercase flex items-center gap-2">
-                <ShieldCheck className="w-3 h-3" />
-                Access Blocked
-              </span>
-            )}
-            {/* Auth UI */}
-            <div className="flex items-center gap-4 pl-4 border-l border-white/10">
-              <SignedOut>
-                <SignInButton mode="modal">
-                  <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all font-black tracking-tight active:scale-95">
-                    <LogIn className="w-4 h-4" />
-                    Sign In
-                  </button>
-                </SignInButton>
-              </SignedOut>
-              <SignedIn>
-                <UserButton afterSignOutUrl="/" appearance={{
-                  elements: {
-                    userButtonAvatarBox: "w-10 h-10 rounded-xl"
-                  }
-                }} />
-              </SignedIn>
-            </div>
-
-            {sessionError && (
-              <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20 max-w-[200px] truncate">
-                DB Error: {sessionError}
-              </span>
-            )}
-
-            <button
-              onClick={isCameraOn ? stopMonitoring : startMonitoring}
-              disabled={!isSignedIn}
-              className={`flex items-center gap-3 px-8 py-3 rounded-3xl font-black tracking-tight transition-all active:scale-95 shadow-lg ${!isSignedIn
-                ? 'bg-white/5 border border-white/10 text-white/20 cursor-not-allowed'
-                : isCameraOn
-                  ? 'bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20'
-                  : 'bg-[#00ff88]/10 border border-[#00ff88]/20 text-[#00ff88] hover:bg-[#00ff88]/20'
-                }`}
-            >
-              <PlayCircle className="w-5 h-5" />
-              {isCameraOn ? 'Stop Monitoring' : 'Start Monitoring'}
-              {!isSignedIn && <span className="text-[10px] opacity-50">(Login required)</span>}
-            </button>
-          </div>
         </header>
 
 
