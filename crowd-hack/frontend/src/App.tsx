@@ -407,7 +407,7 @@ function App() {
               </button>
 
               {showSettings && (
-                <div className="absolute top-full right-0 mt-4 w-80 bg-[#121624] border border-white/10 rounded-[2rem] p-8 shadow-2xl backdrop-blur-3xl z-50">
+                <div className="absolute top-full right-0 mt-4 w-[calc(100vw-3rem)] max-w-80 bg-[#121624] border border-white/10 rounded-[2rem] p-6 lg:p-8 shadow-2xl backdrop-blur-3xl z-50 origin-top-right">
                   <h3 className="text-xs font-black text-white/30 tracking-[0.2em] uppercase mb-6">Threshold Settings</h3>
 
                   <div className="space-y-8">
